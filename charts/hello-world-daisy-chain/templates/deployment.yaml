@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-daisy-chain
+spec:
+  selector:
+    matchLabels:
+      app: hello-world-daisy-chain
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: hello-world-daisy-chain
+    spec:
+      containers:
+      - image: docker-registry.default.svc.cluster.local:5000/hwdc:latest
+        imagePullPolicy: Always
+        name: hello-world-daisy-chain
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-daisy-chain
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: hello-world-daisy-chain
